@@ -1,13 +1,9 @@
 package com.cg.capbook.beans;
-
 import java.util.Map;
-
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 @Entity
 public class Profile {
@@ -23,23 +19,28 @@ public class Profile {
 	private String relationshipStatus;
 	private String dateOfJoining;
 	private String workPlace;
+	private String currentCity;
+	private String homeTown;
+	private String highestEducation;
 	@ManyToMany
+	@MapKey
 	private Map<Integer, Page> pages;
 	@OneToMany
+	@MapKey
 	private Map<Integer, Post> posts;
-	@ManyToMany
-	private Map<Integer,Friend> friends;
-	@Embedded
-	private Address address;
-	@Embedded
-	private Education education;
+
+	//private Map<String,Profile>friends;
+	//private List<Profile> friends;
+	@MapKey
+	@OneToMany
+	private Map<String, Profile> friends;
 	public Profile() {
 		super();
 	}
 	public Profile(String emailId, String password, String firstName, String lastName, String dateOfBirth,
 			String gender, String userBio, String relationshipStatus, String dateOfJoining, String workPlace,
-			Map<Integer, Page> pages, Map<Integer, Post> posts, Map<Integer, Friend> friends, Address address,
-			Education education) {
+			String currentCity, String homeTown, String highestEducation, Map<Integer, Page> pages,
+			Map<Integer, Post> posts, Map<String, Profile> friends) {
 		super();
 		this.emailId = emailId;
 		this.password = password;
@@ -51,11 +52,12 @@ public class Profile {
 		this.relationshipStatus = relationshipStatus;
 		this.dateOfJoining = dateOfJoining;
 		this.workPlace = workPlace;
+		this.currentCity = currentCity;
+		this.homeTown = homeTown;
+		this.highestEducation = highestEducation;
 		this.pages = pages;
 		this.posts = posts;
 		this.friends = friends;
-		this.address = address;
-		this.education = education;
 	}
 	public String getEmailId() {
 		return emailId;
@@ -117,6 +119,24 @@ public class Profile {
 	public void setWorkPlace(String workPlace) {
 		this.workPlace = workPlace;
 	}
+	public String getCurrentCity() {
+		return currentCity;
+	}
+	public void setCurrentCity(String currentCity) {
+		this.currentCity = currentCity;
+	}
+	public String getHomeTown() {
+		return homeTown;
+	}
+	public void setHomeTown(String homeTown) {
+		this.homeTown = homeTown;
+	}
+	public String getHighestEducation() {
+		return highestEducation;
+	}
+	public void setHighestEducation(String highestEducation) {
+		this.highestEducation = highestEducation;
+	}
 	public Map<Integer, Page> getPages() {
 		return pages;
 	}
@@ -129,36 +149,25 @@ public class Profile {
 	public void setPosts(Map<Integer, Post> posts) {
 		this.posts = posts;
 	}
-	public Map<Integer, Friend> getFriends() {
+	public Map<String, Profile> getFriends() {
 		return friends;
 	}
-	public void setFriends(Map<Integer, Friend> friends) {
+	public void setFriends(Map<String, Profile> friends) {
 		this.friends = friends;
-	}
-	public Address getAddress() {
-		return address;
-	}
-	public void setAddress(Address address) {
-		this.address = address;
-	}
-	public Education getEducation() {
-		return education;
-	}
-	public void setEducation(Education education) {
-		this.education = education;
 	}
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((address == null) ? 0 : address.hashCode());
+		result = prime * result + ((currentCity == null) ? 0 : currentCity.hashCode());
 		result = prime * result + ((dateOfBirth == null) ? 0 : dateOfBirth.hashCode());
 		result = prime * result + ((dateOfJoining == null) ? 0 : dateOfJoining.hashCode());
-		result = prime * result + ((education == null) ? 0 : education.hashCode());
 		result = prime * result + ((emailId == null) ? 0 : emailId.hashCode());
 		result = prime * result + ((firstName == null) ? 0 : firstName.hashCode());
 		result = prime * result + ((friends == null) ? 0 : friends.hashCode());
 		result = prime * result + ((gender == null) ? 0 : gender.hashCode());
+		result = prime * result + ((highestEducation == null) ? 0 : highestEducation.hashCode());
+		result = prime * result + ((homeTown == null) ? 0 : homeTown.hashCode());
 		result = prime * result + ((lastName == null) ? 0 : lastName.hashCode());
 		result = prime * result + ((pages == null) ? 0 : pages.hashCode());
 		result = prime * result + ((password == null) ? 0 : password.hashCode());
@@ -177,10 +186,10 @@ public class Profile {
 		if (getClass() != obj.getClass())
 			return false;
 		Profile other = (Profile) obj;
-		if (address == null) {
-			if (other.address != null)
+		if (currentCity == null) {
+			if (other.currentCity != null)
 				return false;
-		} else if (!address.equals(other.address))
+		} else if (!currentCity.equals(other.currentCity))
 			return false;
 		if (dateOfBirth == null) {
 			if (other.dateOfBirth != null)
@@ -191,11 +200,6 @@ public class Profile {
 			if (other.dateOfJoining != null)
 				return false;
 		} else if (!dateOfJoining.equals(other.dateOfJoining))
-			return false;
-		if (education == null) {
-			if (other.education != null)
-				return false;
-		} else if (!education.equals(other.education))
 			return false;
 		if (emailId == null) {
 			if (other.emailId != null)
@@ -216,6 +220,16 @@ public class Profile {
 			if (other.gender != null)
 				return false;
 		} else if (!gender.equals(other.gender))
+			return false;
+		if (highestEducation == null) {
+			if (other.highestEducation != null)
+				return false;
+		} else if (!highestEducation.equals(other.highestEducation))
+			return false;
+		if (homeTown == null) {
+			if (other.homeTown != null)
+				return false;
+		} else if (!homeTown.equals(other.homeTown))
 			return false;
 		if (lastName == null) {
 			if (other.lastName != null)
@@ -259,7 +273,7 @@ public class Profile {
 		return "Profile [emailId=" + emailId + ", password=" + password + ", firstName=" + firstName + ", lastName="
 				+ lastName + ", dateOfBirth=" + dateOfBirth + ", gender=" + gender + ", userBio=" + userBio
 				+ ", relationshipStatus=" + relationshipStatus + ", dateOfJoining=" + dateOfJoining + ", workPlace="
-				+ workPlace + ", pages=" + pages + ", posts=" + posts + ", friends=" + friends + ", address=" + address
-				+ ", education=" + education + "]";
+				+ workPlace + ", currentCity=" + currentCity + ", homeTown=" + homeTown + ", highestEducation="
+				+ highestEducation + "]";
 	}
 }
