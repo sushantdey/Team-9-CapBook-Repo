@@ -1,6 +1,5 @@
 package com.cg.capbook.controllers;
 import java.util.List;
-import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -34,13 +33,14 @@ public class CapBookController {
 		return new ResponseEntity<>("Registered Successfully!!!Please Login using your credentials",HttpStatus.OK);
 	}	
 	@RequestMapping(value="/loginUser",method=RequestMethod.POST,consumes=MediaType.APPLICATION_JSON_VALUE,produces=MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<String> loginUser (@RequestBody Profile profile) {
+	ResponseEntity<Profile> loginUser (@RequestBody Profile profile) {
 		try {
+				System.out.println(profile.getEmailId()+" "+profile.getPassword());
 				profile=capBookServices.loginUser(profile);
 			} catch (InvalidEmailIdException | InvalidPasswordException e) {
-				return new ResponseEntity<String>("Invalid EmailId/Password!!!Please Try Again",HttpStatus.BAD_REQUEST);
+				return new ResponseEntity<Profile>(profile,HttpStatus.BAD_REQUEST);
 			}
-		return new ResponseEntity<String>(profile.toString(),HttpStatus.OK);
+		return new ResponseEntity<Profile>(profile,HttpStatus.OK);
 	}
 	@RequestMapping(value="/editProfile",method=RequestMethod.POST,consumes=MediaType.APPLICATION_JSON_VALUE,produces=MediaType.APPLICATION_JSON_VALUE)
 	ResponseEntity<String> editProfile(@RequestBody Profile profile){	

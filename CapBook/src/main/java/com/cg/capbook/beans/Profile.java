@@ -18,7 +18,7 @@ public class Profile {
 	//private Image profilePic;
 	private String relationshipStatus;
 	private String dateOfJoining;
-	private String workPlace;
+	private String designation;
 	private String currentCity;
 	private String homeTown;
 	private String highestEducation;
@@ -51,7 +51,7 @@ public class Profile {
 		this.userBio = userBio;
 		this.relationshipStatus = relationshipStatus;
 		this.dateOfJoining = dateOfJoining;
-		this.workPlace = workPlace;
+		this.designation = designation;
 		this.currentCity = currentCity;
 		this.homeTown = homeTown;
 		this.highestEducation = highestEducation;
@@ -113,11 +113,11 @@ public class Profile {
 	public void setDateOfJoining(String dateOfJoining) {
 		this.dateOfJoining = dateOfJoining;
 	}
-	public String getWorkPlace() {
-		return workPlace;
+	public String getDesignation() {
+		return designation;
 	}
-	public void setWorkPlace(String workPlace) {
-		this.workPlace = workPlace;
+	public void setDesignation(String designation) {
+		this.designation = designation;
 	}
 	public String getCurrentCity() {
 		return currentCity;
@@ -174,7 +174,7 @@ public class Profile {
 		result = prime * result + ((posts == null) ? 0 : posts.hashCode());
 		result = prime * result + ((relationshipStatus == null) ? 0 : relationshipStatus.hashCode());
 		result = prime * result + ((userBio == null) ? 0 : userBio.hashCode());
-		result = prime * result + ((workPlace == null) ? 0 : workPlace.hashCode());
+		result = prime * result + ((designation == null) ? 0 : designation.hashCode());
 		return result;
 	}
 	@Override
@@ -261,10 +261,10 @@ public class Profile {
 				return false;
 		} else if (!userBio.equals(other.userBio))
 			return false;
-		if (workPlace == null) {
-			if (other.workPlace != null)
+		if (designation == null) {
+			if (other.designation != null)
 				return false;
-		} else if (!workPlace.equals(other.workPlace))
+		} else if (!designation.equals(other.designation))
 			return false;
 		return true;
 	}
@@ -273,7 +273,7 @@ public class Profile {
 		return "Profile [emailId=" + emailId + ", password=" + password + ", firstName=" + firstName + ", lastName="
 				+ lastName + ", dateOfBirth=" + dateOfBirth + ", gender=" + gender + ", userBio=" + userBio
 				+ ", relationshipStatus=" + relationshipStatus + ", dateOfJoining=" + dateOfJoining + ", workPlace="
-				+ workPlace + ", currentCity=" + currentCity + ", homeTown=" + homeTown + ", highestEducation="
+				+ designation + ", currentCity=" + currentCity + ", homeTown=" + homeTown + ", highestEducation="
 				+ highestEducation + "]";
 	}
 }

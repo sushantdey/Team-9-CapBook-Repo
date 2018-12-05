@@ -21,6 +21,16 @@ public class CapBookServicesImpl implements CapBookServices {
 	@Autowired
 	private MessageDAO messageDAO;
 	static String sessionEmailId;
+	public CapBookServicesImpl() {
+		super();
+	}
+	public CapBookServicesImpl(ProfileDAO profileDAO) {
+		super();
+		this.profileDAO=profileDAO;
+	}
+	public CapBookServicesImpl(MessageDAO messageDAO) {
+		this.messageDAO=messageDAO;
+	}
 	@Override
 	public void registerUser(Profile profile) throws EmailAlreadyUsedException {
 		if(profileDAO.findById(profile.getEmailId()).isPresent())
@@ -49,8 +59,8 @@ public class CapBookServicesImpl implements CapBookServices {
 			profile1.setRelationshipStatus(profile.getRelationshipStatus());
 		if(profile.getUserBio()!=null)
 			profile1.setUserBio(profile.getUserBio());
-		if(profile.getWorkPlace()!=null)
-			profile1.setWorkPlace(profile.getWorkPlace());
+		if(profile.getDesignation()!=null)
+			profile1.setDesignation(profile.getDesignation());
 		return profileDAO.save(profile1);
 	}
 	public List<Profile> searchAllUsersByName(String userName) throws  NoUserFoundException{

@@ -10,7 +10,7 @@ import com.cg.capbook.beans.Profile;
 public interface ProfileDAO extends JpaRepository<Profile, String>{
 	@Modifying
 	@Transactional
-	@Query(value="UPDATE Profile SET current_City=?1,highest_Education=?2,relationship_Status=?3,user_Bio=?4,work_Place=?5 WHERE email_Id=?6",nativeQuery=true)
+	@Query(value="UPDATE Profile SET current_City=?1,highest_Education=?2,relationship_Status=?3,user_Bio=?4,designation=?5 WHERE email_Id=?6",nativeQuery=true)
 	public int editProfile(String currentCity,String highestEducation,String relationshipStatus,String userBio,String workPlace,String emailId);
 	@Modifying
 	@Transactional
