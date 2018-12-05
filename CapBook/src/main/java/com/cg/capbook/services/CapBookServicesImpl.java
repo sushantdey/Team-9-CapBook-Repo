@@ -20,8 +20,8 @@ public class CapBookServicesImpl implements CapBookServices {
 	private ProfileDAO profileDAO;
 	@Autowired
 	private MessageDAO messageDAO;
-	static String sessionEmailId;
-	public CapBookServicesImpl() {
+	private static String sessionEmailId;
+	/*public CapBookServicesImpl() {
 		super();
 	}
 	public CapBookServicesImpl(ProfileDAO profileDAO) {
@@ -30,7 +30,7 @@ public class CapBookServicesImpl implements CapBookServices {
 	}
 	public CapBookServicesImpl(MessageDAO messageDAO) {
 		this.messageDAO=messageDAO;
-	}
+	}*/
 	@Override
 	public void registerUser(Profile profile) throws EmailAlreadyUsedException {
 		if(profileDAO.findById(profile.getEmailId()).isPresent())
