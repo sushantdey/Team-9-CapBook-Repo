@@ -3,14 +3,21 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.MapKey;
 @Entity
-public class Message {
+public class Message{
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private int messageId;
 	private String senderEmailId;
 	private String receiverEmailId;
 	private String message;
+	@ManyToOne 
+	@MapKey
+	@JoinColumn(name="friendId")
+	private Friend friend;
 	public Message() {
 		super();
 	}

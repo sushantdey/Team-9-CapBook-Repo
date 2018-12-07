@@ -1,7 +1,13 @@
 package com.cg.capbook.beans;
+import java.util.Arrays;
 import java.util.Map;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
@@ -14,33 +20,35 @@ public class Profile {
 	private String lastName;
 	private String dateOfBirth;
 	private String gender;
-	private String userBio;
-	//private Image profilePic;
-	private String relationshipStatus;
-	private String dateOfJoining;
-	private String designation;
-	private String currentCity;
 	private String homeTown;
+	private String dateOfJoining;
+	private String mobileNo;
+	private String securityQuestion;
+	private String securityAnswer;
+	@Column(columnDefinition="BLOB")
+	private byte[] profilePic;
+	private String userBio;
+	private String currentCity;
+	private String designation;
 	private String highestEducation;
-	@ManyToMany
-	@MapKey
-	private Map<Integer, Page> pages;
-	@OneToMany
+	private String relationshipStatus;
+	 @ManyToMany(fetch = FetchType.LAZY,
+	            cascade = CascadeType.ALL)
+	    @JoinTable(name = "profile_friend",
+	            joinColumns = { @JoinColumn(name="emailId") },
+	            inverseJoinColumns = { @JoinColumn(name = "friendId") })
+	private Map<Integer, Friend> friends;
+	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
 	@MapKey
 	private Map<Integer, Post> posts;
-
-	//private Map<String,Profile>friends;
-	//private List<Profile> friends;
-	@MapKey
-	@OneToMany
-	private Map<String, Profile> friends;
 	public Profile() {
 		super();
 	}
 	public Profile(String emailId, String password, String firstName, String lastName, String dateOfBirth,
-			String gender, String userBio, String relationshipStatus, String dateOfJoining, String workPlace,
-			String currentCity, String homeTown, String highestEducation, Map<Integer, Page> pages,
-			Map<Integer, Post> posts, Map<String, Profile> friends) {
+			String gender, String homeTown, String dateOfJoining, String mobileNo, String securityQuestion,
+			String securityAnswer, byte[] profilePic, String userBio, String currentCity, String designation,
+			String highestEducation, String relationshipStatus, Map<Integer, Friend> friends,
+			Map<Integer, Post> posts) {
 		super();
 		this.emailId = emailId;
 		this.password = password;
@@ -48,16 +56,19 @@ public class Profile {
 		this.lastName = lastName;
 		this.dateOfBirth = dateOfBirth;
 		this.gender = gender;
-		this.userBio = userBio;
-		this.relationshipStatus = relationshipStatus;
-		this.dateOfJoining = dateOfJoining;
-		this.designation = designation;
-		this.currentCity = currentCity;
 		this.homeTown = homeTown;
+		this.dateOfJoining = dateOfJoining;
+		this.mobileNo = mobileNo;
+		this.securityQuestion = securityQuestion;
+		this.securityAnswer = securityAnswer;
+		this.profilePic = profilePic;
+		this.userBio = userBio;
+		this.currentCity = currentCity;
+		this.designation = designation;
 		this.highestEducation = highestEducation;
-		this.pages = pages;
-		this.posts = posts;
+		this.relationshipStatus = relationshipStatus;
 		this.friends = friends;
+		this.posts = posts;
 	}
 	public String getEmailId() {
 		return emailId;
@@ -95,17 +106,11 @@ public class Profile {
 	public void setGender(String gender) {
 		this.gender = gender;
 	}
-	public String getUserBio() {
-		return userBio;
+	public String getHomeTown() {
+		return homeTown;
 	}
-	public void setUserBio(String userBio) {
-		this.userBio = userBio;
-	}
-	public String getRelationshipStatus() {
-		return relationshipStatus;
-	}
-	public void setRelationshipStatus(String relationshipStatus) {
-		this.relationshipStatus = relationshipStatus;
+	public void setHomeTown(String homeTown) {
+		this.homeTown = homeTown;
 	}
 	public String getDateOfJoining() {
 		return dateOfJoining;
@@ -113,11 +118,35 @@ public class Profile {
 	public void setDateOfJoining(String dateOfJoining) {
 		this.dateOfJoining = dateOfJoining;
 	}
-	public String getDesignation() {
-		return designation;
+	public String getMobileNo() {
+		return mobileNo;
 	}
-	public void setDesignation(String designation) {
-		this.designation = designation;
+	public void setMobileNo(String mobileNo) {
+		this.mobileNo = mobileNo;
+	}
+	public String getSecurityQuestion() {
+		return securityQuestion;
+	}
+	public void setSecurityQuestion(String securityQuestion) {
+		this.securityQuestion = securityQuestion;
+	}
+	public String getSecurityAnswer() {
+		return securityAnswer;
+	}
+	public void setSecurityAnswer(String securityAnswer) {
+		this.securityAnswer = securityAnswer;
+	}
+	public byte[] getProfilePic() {
+		return profilePic;
+	}
+	public void setProfilePic(byte[] profilePic) {
+		this.profilePic = profilePic;
+	}
+	public String getUserBio() {
+		return userBio;
+	}
+	public void setUserBio(String userBio) {
+		this.userBio = userBio;
 	}
 	public String getCurrentCity() {
 		return currentCity;
@@ -125,11 +154,11 @@ public class Profile {
 	public void setCurrentCity(String currentCity) {
 		this.currentCity = currentCity;
 	}
-	public String getHomeTown() {
-		return homeTown;
+	public String getDesignation() {
+		return designation;
 	}
-	public void setHomeTown(String homeTown) {
-		this.homeTown = homeTown;
+	public void setDesignation(String designation) {
+		this.designation = designation;
 	}
 	public String getHighestEducation() {
 		return highestEducation;
@@ -137,23 +166,23 @@ public class Profile {
 	public void setHighestEducation(String highestEducation) {
 		this.highestEducation = highestEducation;
 	}
-	public Map<Integer, Page> getPages() {
-		return pages;
+	public String getRelationshipStatus() {
+		return relationshipStatus;
 	}
-	public void setPages(Map<Integer, Page> pages) {
-		this.pages = pages;
+	public void setRelationshipStatus(String relationshipStatus) {
+		this.relationshipStatus = relationshipStatus;
+	}
+	public Map<Integer, Friend> getFriends() {
+		return friends;
+	}
+	public void setFriends(Map<Integer, Friend> friends) {
+		this.friends = friends;
 	}
 	public Map<Integer, Post> getPosts() {
 		return posts;
 	}
 	public void setPosts(Map<Integer, Post> posts) {
 		this.posts = posts;
-	}
-	public Map<String, Profile> getFriends() {
-		return friends;
-	}
-	public void setFriends(Map<String, Profile> friends) {
-		this.friends = friends;
 	}
 	@Override
 	public int hashCode() {
@@ -162,6 +191,7 @@ public class Profile {
 		result = prime * result + ((currentCity == null) ? 0 : currentCity.hashCode());
 		result = prime * result + ((dateOfBirth == null) ? 0 : dateOfBirth.hashCode());
 		result = prime * result + ((dateOfJoining == null) ? 0 : dateOfJoining.hashCode());
+		result = prime * result + ((designation == null) ? 0 : designation.hashCode());
 		result = prime * result + ((emailId == null) ? 0 : emailId.hashCode());
 		result = prime * result + ((firstName == null) ? 0 : firstName.hashCode());
 		result = prime * result + ((friends == null) ? 0 : friends.hashCode());
@@ -169,12 +199,14 @@ public class Profile {
 		result = prime * result + ((highestEducation == null) ? 0 : highestEducation.hashCode());
 		result = prime * result + ((homeTown == null) ? 0 : homeTown.hashCode());
 		result = prime * result + ((lastName == null) ? 0 : lastName.hashCode());
-		result = prime * result + ((pages == null) ? 0 : pages.hashCode());
+		result = prime * result + ((mobileNo == null) ? 0 : mobileNo.hashCode());
 		result = prime * result + ((password == null) ? 0 : password.hashCode());
 		result = prime * result + ((posts == null) ? 0 : posts.hashCode());
+		result = prime * result + Arrays.hashCode(profilePic);
 		result = prime * result + ((relationshipStatus == null) ? 0 : relationshipStatus.hashCode());
+		result = prime * result + ((securityAnswer == null) ? 0 : securityAnswer.hashCode());
+		result = prime * result + ((securityQuestion == null) ? 0 : securityQuestion.hashCode());
 		result = prime * result + ((userBio == null) ? 0 : userBio.hashCode());
-		result = prime * result + ((designation == null) ? 0 : designation.hashCode());
 		return result;
 	}
 	@Override
@@ -200,6 +232,11 @@ public class Profile {
 			if (other.dateOfJoining != null)
 				return false;
 		} else if (!dateOfJoining.equals(other.dateOfJoining))
+			return false;
+		if (designation == null) {
+			if (other.designation != null)
+				return false;
+		} else if (!designation.equals(other.designation))
 			return false;
 		if (emailId == null) {
 			if (other.emailId != null)
@@ -236,11 +273,10 @@ public class Profile {
 				return false;
 		} else if (!lastName.equals(other.lastName))
 			return false;
-		if (pages == null) {
-			if (other.pages != null)
+		if (mobileNo == null) {
+			if (other.mobileNo != null)
 				return false;
-		} else if (!pages.equals(other.pages))
-			return false;
+		} else if (!mobileNo.equals(other.mobileNo))
 		if (password == null) {
 			if (other.password != null)
 				return false;
@@ -251,29 +287,38 @@ public class Profile {
 				return false;
 		} else if (!posts.equals(other.posts))
 			return false;
+		if (!Arrays.equals(profilePic, other.profilePic))
+			return false;
 		if (relationshipStatus == null) {
 			if (other.relationshipStatus != null)
 				return false;
 		} else if (!relationshipStatus.equals(other.relationshipStatus))
+			return false;
+		if (securityAnswer == null) {
+			if (other.securityAnswer != null)
+				return false;
+		} else if (!securityAnswer.equals(other.securityAnswer))
+			return false;
+		if (securityQuestion == null) {
+			if (other.securityQuestion != null)
+				return false;
+		} else if (!securityQuestion.equals(other.securityQuestion))
 			return false;
 		if (userBio == null) {
 			if (other.userBio != null)
 				return false;
 		} else if (!userBio.equals(other.userBio))
 			return false;
-		if (designation == null) {
-			if (other.designation != null)
-				return false;
-		} else if (!designation.equals(other.designation))
-			return false;
 		return true;
 	}
 	@Override
 	public String toString() {
 		return "Profile [emailId=" + emailId + ", password=" + password + ", firstName=" + firstName + ", lastName="
-				+ lastName + ", dateOfBirth=" + dateOfBirth + ", gender=" + gender + ", userBio=" + userBio
-				+ ", relationshipStatus=" + relationshipStatus + ", dateOfJoining=" + dateOfJoining + ", workPlace="
-				+ designation + ", currentCity=" + currentCity + ", homeTown=" + homeTown + ", highestEducation="
-				+ highestEducation + "]";
+				+ lastName + ", dateOfBirth=" + dateOfBirth + ", gender=" + gender + ", homeTown=" + homeTown
+				+ ", dateOfJoining=" + dateOfJoining + ", mobileNo=" + mobileNo + ", securityQuestion="
+				+ securityQuestion + ", securityAnswer=" + securityAnswer + ", profilePic="
+				+ Arrays.toString(profilePic) + ", userBio=" + userBio + ", currentCity=" + currentCity
+				+ ", designation=" + designation + ", highestEducation=" + highestEducation + ", relationshipStatus="
+				+ relationshipStatus + "]";
 	}
 }

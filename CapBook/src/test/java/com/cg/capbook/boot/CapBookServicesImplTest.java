@@ -63,8 +63,8 @@ public class CapBookServicesImplTest {
 	}
 	@Before
 	public void setUp() throws Exception {
-		profile1 = new Profile("sushant@gmail.com", "Sushant@123", "Sushant", "Dey", "15/04/1996", "male", "none", "single", null, "Pune", "Pune", "Jamshedpur", "B.Tech", null, null, null);
-		profile2 = new Profile("somnath@gmail.com", "Somnath@123", "Somnath", "Dey", "15/04/1996", "male", "none", "single", null, "Pune", "Pune", "Bokaro", "B.Tech", null, null, null);
+		profile1 = new Profile("sushant@gmail.com", "sushant@123", "Sushant", "Dey", "15/04/1996", "male", "Jamshedpur", "07/12/2018", "7004308409", "abc", "abc", null, "none", "Pune", "sr. analyst", "B.Tech", "single", null, null);
+		profile1 = new Profile("somnath@gmail.com", "somnath@123", "Somnath", "Dey", "15/04/1995", "male", "Bokaro", "07/12/2018", "7004308409", "abc", "abc", null, "none", "Pune", "sr. analyst", "B.Tech", "single", null, null);
 		/*Map<String, Profile> profiles = new LinkedHashMap<>();
 		profiles.put(profile1.getEmailId(), profile1);
 		profiles.put(profile2.getEmailId(), profile2);
@@ -86,7 +86,7 @@ public class CapBookServicesImplTest {
 	}
 	@Test
 	public void testLoginUser() throws InvalidEmailIdException, InvalidPasswordException {
-		profile1 = new Profile("sushant@gmail.com", "Sushant@123", "Sushant", "Dey", "15/04/1996", "male", "none", "single", null, "Pune", "Pune", "Jamshedpur", "B.Tech", null, null, null);
+		profile1 = new Profile("sushant@gmail.com", "sushant@123", "Sushant", "Dey", "15/04/996", "male", "Jamshedpur", "07/12/2018", "7004308409", "abc", "abc", null, "none", "Pune", "sr. analyst", "B.Tech", "single", null, null);
 		Mockito.when(mockProfileDAO.findById(Mockito.anyString())).thenReturn(Optional.of(profile1));
 		assertThat(capBookServices.loginUser(profile1)).isEqualTo(profile1);
 	}
