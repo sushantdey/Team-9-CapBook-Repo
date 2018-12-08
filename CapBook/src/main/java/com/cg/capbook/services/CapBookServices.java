@@ -1,6 +1,5 @@
 package com.cg.capbook.services;
 import java.util.List;
-
 import com.cg.capbook.beans.Comment;
 import com.cg.capbook.beans.Friend;
 import com.cg.capbook.beans.Message;
@@ -27,9 +26,9 @@ public interface CapBookServices {
 	Profile insertProfilePic(byte[] profilePic);
 	byte[] fetchProfilePic();
 	Friend acceptFriend(String fromUserId, String toUserId) throws RequestAlreadySentException;
-	Profile changePassword(String emailId,String newPassword) throws InvalidEmailIdException, InvalidPasswordException;
+	Profile changePassword(String newPassword) throws InvalidEmailIdException, InvalidPasswordException;
 	Friend rejectFriend(String fromUserId, String toUserId) throws RequestAlreadySentException;
-	public List<Profile> getFriendList(String emailId);
+	List<Profile> getFriendList(String emailId);
 	String forgotPassword(String emailId, String securityQuestion, String securityAnswer)throws InvalidEmailIdException, UserAuthenticationFailedException;
 	Post createPost(Post post);
 	Post updatePostLikes(Post post);

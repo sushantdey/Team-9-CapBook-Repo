@@ -1,4 +1,5 @@
 package com.cg.capbook.controllers;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import com.cg.capbook.beans.Friend;
 import com.cg.capbook.beans.Message;
 import com.cg.capbook.beans.Profile;
@@ -26,12 +28,14 @@ import com.cg.capbook.exceptions.RequestAlreadyReceivedException;
 import com.cg.capbook.exceptions.RequestAlreadySentException;
 import com.cg.capbook.exceptions.UserAuthenticationFailedException;
 import com.cg.capbook.services.CapBookServices;
+import com.cg.capbook.services.StorageService;
 @RestController
 @CrossOrigin
 public class CapBookController {
 	@Autowired
 	private CapBookServices capBookServices;
-
+	@Autowired
+	private StorageService storageService;
 	@RequestMapping(value="/registerUser",method=RequestMethod.POST,consumes=MediaType.APPLICATION_JSON_VALUE)
 	ResponseEntity<Profile> registerUser(@RequestBody Profile profile) throws EmailAlreadyUsedException{
 		profile=capBookServices.registerUser(profile);
@@ -43,15 +47,16 @@ public class CapBookController {
 		return new ResponseEntity<Profile>(profile,HttpStatus.OK);
 	}
 	@RequestMapping(value="/forgotPassword",method=RequestMethod.POST,consumes=MediaType.APPLICATION_JSON_VALUE,produces=MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<String> forgotPassword(@RequestBody Profile profile) throws InvalidEmailIdException, UserAuthenticationFailedException {
+	ResponseEntity<Profile> forgotPassword(@RequestBody Profile profile) throws InvalidEmailIdException, UserAuthenticationFailedException {
 		String password=capBookServices.forgotPassword(profile.getEmailId(),profile.getSecurityQuestion(),profile.getSecurityAnswer());
-		return new ResponseEntity<String>(password,HttpStatus.OK);
+		profile.setPassword(password);
+		return new ResponseEntity<Profile>(profile,HttpStatus.OK);
 	}
 
 	@RequestMapping(value="/changePassword",method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<Profile> changePassword(@RequestBody Profile profile) throws InvalidEmailIdException, InvalidPasswordException {
+	ResponseEntity<Profile> changePassword(@RequestParam("password")String password) throws InvalidEmailIdException, InvalidPasswordException {
 		System.out.println("start");	
-		capBookServices.changePassword(profile.getEmailId(),profile.getPassword());
+		Profile profile= capBookServices.changePassword(password);
 		System.out.println("done");
 		return new ResponseEntity<Profile>(profile,HttpStatus.OK);
 	}
@@ -63,7 +68,7 @@ public class CapBookController {
 	}
 
 	@RequestMapping(value="/findUsers",method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<List<Profile>> findUsers(@RequestParam String userName) throws NoUserFoundException{	
+	ResponseEntity<List<Profile>> findUsers(@RequestParam("name") String userName) throws NoUserFoundException{	
 		List<Profile>listUser=null;		
 		listUser=capBookServices.searchAllUsersByName(userName);
 		return new ResponseEntity<List<Profile>>(listUser,HttpStatus.OK);
@@ -104,18 +109,21 @@ public class CapBookController {
 		return new ResponseEntity<List<Message>>(messages,HttpStatus.OK);
 	}
 
-	//@RequestMapping(value = "/setProfilePic", method = RequestMethod.POST,consumes = MediaType.ALL_VALUE)
-	@PostMapping(value="/setProfilePic",consumes= {MediaType.ALL_VALUE},produces=MediaType.ALL_VALUE)
-	public ResponseEntity<byte[]> setImage() throws IOException {
-		System.out.println("Image");
-		//File file=new File(image.getOriginalFilename());
-		//System.out.println(file);
-		//image.transferTo(file);@RequestParam("Image") MultipartFile image
-		FileInputStream fin=new FileInputStream("D:\\Users\\ADM-IG-HWDLAB1D\\Downloads\\Shirley Setia.jpg");  
-		byte[] bytes = StreamUtils.copyToByteArray(fin);
-		capBookServices.insertProfilePic(bytes);
-		System.out.println(bytes);
-		return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(bytes);
+	 @PostMapping(value="/setProfilePic",consumes= {MediaType.ALL_VALUE},produces=MediaType.ALL_VALUE)
+	    public ResponseEntity<byte[]> setImage(@RequestParam("Image") MultipartFile image) throws IOException {
+	    	System.out.println("Image");
+	    	storageService.store(image);
+	    	//File file1=(File) storageService.loadFile(image.getOriginalFilename());
+	    	File file=new File("D:\\java\\finalProject\\userImages"+image.getOriginalFilename());
+	    	//System.out.println(file);
+	    	image.transferTo(file);
+	    	//System.out.println(file);
+	    	FileInputStream fin=new FileInputStream(file);
+	    	//System.out.println(file);
+	        byte[] bytes = StreamUtils.copyToByteArray(fin);
+	        capBookServices.insertProfilePic(bytes);
+	        System.out.println(bytes);
+	        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(bytes);
 	}
 	@RequestMapping(value = "/getProfilePic", method = RequestMethod.GET,produces = MediaType.IMAGE_JPEG_VALUE)
 	public ResponseEntity<byte[]> getImage() throws IOException {

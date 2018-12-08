@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import com.cg.capbook.beans.Comment;
 import com.cg.capbook.beans.Friend;
 import com.cg.capbook.beans.Message;
@@ -67,24 +66,25 @@ public class CapBookServicesImpl implements CapBookServices {
 	}
 
 	@Override
-	public Profile changePassword(String emailId,String newPassword) throws InvalidEmailIdException, InvalidPasswordException{
-		Profile profile=profileDAO.findById(emailId).orElseThrow(()->new InvalidEmailIdException());
-		profileDAO.changePassword(codecServices.encrypt(newPassword),profile.getEmailId());
-		return null;
+	public Profile changePassword(String password) throws InvalidEmailIdException, InvalidPasswordException{
+		Profile profile=profileDAO.findById(sessionEmailId).orElseThrow(()->new InvalidEmailIdException());
+		profileDAO.changePassword(codecServices.encrypt(password),sessionEmailId);
+		profile.setPassword(password);
+		return profile;
 	}
 
 	@Override
 	public Profile editProfile(Profile profile) throws InvalidEmailIdException {
 		Profile profile1=profileDAO.findById(sessionEmailId).orElseThrow(()->new InvalidEmailIdException());
-		if(profile.getCurrentCity()!=null)
+		if(!profile.getCurrentCity().isEmpty())
 			profile1.setCurrentCity(profile.getCurrentCity());
-		if(profile.getHighestEducation()!=null)
+		if(!profile.getHighestEducation().isEmpty())
 			profile1.setHighestEducation(profile.getHighestEducation());
-		if(profile.getRelationshipStatus()!=null)
+		if(!profile.getRelationshipStatus().isEmpty())
 			profile1.setRelationshipStatus(profile.getRelationshipStatus());
-		if(profile.getUserBio()!=null)
+		if(!profile.getUserBio().isEmpty())
 			profile1.setUserBio(profile.getUserBio());
-		if(profile.getDesignation()!=null)
+		if(!profile.getDesignation().isEmpty())
 			profile1.setDesignation(profile.getDesignation());
 		return profileDAO.save(profile1);
 	}
