@@ -46,7 +46,9 @@ public class CapBookServicesImpl implements CapBookServices {
 		profile.setDateOfJoining(formatter.format(today).toString());
 		profile.setPassword(codecServices.encrypt(profile.getPassword()));
 		System.out.println(profile.getPassword());
-		return profileDAO.save(profile);
+		profile= profileDAO.save(profile);
+		profile.setProfilePic(null);
+		return profile;
 	}
 	@Override
 	public Profile loginUser(Profile profile) throws InvalidEmailIdException, InvalidPasswordException {
@@ -54,7 +56,13 @@ public class CapBookServicesImpl implements CapBookServices {
 		if(!codecServices.decrypt(profile1.getPassword()).equals(profile.getPassword()))
 			throw new InvalidPasswordException();
 		sessionEmailId=profile.getEmailId();
+		profile.setProfilePic(null);
 		return profile1;
+	}
+	@Override
+	public Profile logout() {
+		sessionEmailId=null;
+		return null;
 	}
 	@Override
 	public String forgotPassword(String emailId,String securityQuestion,String securityAnswer) throws InvalidEmailIdException, UserAuthenticationFailedException{
@@ -70,6 +78,7 @@ public class CapBookServicesImpl implements CapBookServices {
 		Profile profile=profileDAO.findById(sessionEmailId).orElseThrow(()->new InvalidEmailIdException());
 		profileDAO.changePassword(codecServices.encrypt(password),sessionEmailId);
 		profile.setPassword(password);
+		profile.setProfilePic(null);
 		return profile;
 	}
 
@@ -86,17 +95,22 @@ public class CapBookServicesImpl implements CapBookServices {
 			profile1.setUserBio(profile.getUserBio());
 		if(!profile.getDesignation().isEmpty())
 			profile1.setDesignation(profile.getDesignation());
-		return profileDAO.save(profile1);
+		profile= profileDAO.save(profile1);
+		profile.setProfilePic(null);
+		return profile;
 	}
 	@Override
 	public List<Profile> searchAllUsersByName(String userName) throws  NoUserFoundException{
 		List<Profile> listUser=profileDAO.searchAllUserByName(userName.toLowerCase());
+		for (Profile profile : listUser) 
+			profile.setProfilePic(null);
 		if(listUser.isEmpty())
 			throw new NoUserFoundException();
 		return listUser;
 	}
 	@Override
-	public Friend addFriend(String fromUserId,String toUserId) throws FriendshipAlreadyExistsException, RequestAlreadyReceivedException, RequestAlreadySentException {
+	public Friend addFriend(String toUserId) throws FriendshipAlreadyExistsException, RequestAlreadyReceivedException, RequestAlreadySentException {
+		String fromUserId=sessionEmailId;
 		Friend friend=friendDAO.checkFriendship(fromUserId,toUserId);
 		Friend friend1=friendDAO.checkFriendship(toUserId,fromUserId);
 		if(friend==null && friend1==null){
@@ -152,6 +166,7 @@ public class CapBookServicesImpl implements CapBookServices {
 			else//(friend.getToUserId().equalsIgnoreCase(emailId))
 				//friendList2.add(friend);
 				friendProfile=profileDAO.findById(friend.getFromUserId()).get();
+			friendProfile.setProfilePic(null);
 			friendProfiles.add(friendProfile);
 		}
 		return friendProfiles;
@@ -171,13 +186,16 @@ public class CapBookServicesImpl implements CapBookServices {
 	@Override
 	public Profile getProfile(String emailId) throws InvalidEmailIdException {
 		Profile profile=profileDAO.findById(emailId).orElseThrow(()->new InvalidEmailIdException());
+		profile.setProfilePic(null);
 		return profile;
 	}
 	@Override
 	public Profile insertProfilePic(byte[] profilePic) {
 		Profile profile=profileDAO.findById(sessionEmailId).get();
 		profile.setProfilePic(profilePic);
-		return profileDAO.save(profile);
+		profile = profileDAO.save(profile);
+		profile.setProfilePic(null);
+		return profile;
 	}
 	@Override
 	public byte[] fetchProfilePic() {

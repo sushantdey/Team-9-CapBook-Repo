@@ -16,12 +16,13 @@ import com.cg.capbook.exceptions.UserAuthenticationFailedException;
 public interface CapBookServices {
 	Profile registerUser(Profile profile) throws EmailAlreadyUsedException, EmailAlreadyUsedException;
 	Profile loginUser(Profile profile) throws InvalidEmailIdException,InvalidPasswordException;
+	Profile logout();
 	Profile editProfile(Profile profile) throws InvalidEmailIdException;
 	List<Profile> searchAllUsersByName(String userName) throws  NoUserFoundException;
 	void sendMessage(Message message);
 	List<Message> viewSentMessages(String emailId);
 	List<Message> viewReceivedMessages(String emailId);
-	Friend addFriend(String toUserId,String fromUserId) throws FriendshipAlreadyExistsException, RequestAlreadyReceivedException, RequestAlreadySentException;
+	Friend addFriend(String toUserId) throws FriendshipAlreadyExistsException, RequestAlreadyReceivedException, RequestAlreadySentException;
 	Profile getProfile(String emailId) throws InvalidEmailIdException;
 	Profile insertProfilePic(byte[] profilePic);
 	byte[] fetchProfilePic();
