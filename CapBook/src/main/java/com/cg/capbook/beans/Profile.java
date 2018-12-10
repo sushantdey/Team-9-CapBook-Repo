@@ -32,11 +32,11 @@ public class Profile {
 	private String designation;
 	private String highestEducation;
 	private String relationshipStatus;
-	 @ManyToMany(fetch = FetchType.LAZY,
-	            cascade = CascadeType.ALL)
-	    @JoinTable(name = "profile_friend",
-	            joinColumns = { @JoinColumn(name="emailId") },
-	            inverseJoinColumns = { @JoinColumn(name = "friendId") })
+	@ManyToMany(fetch = FetchType.LAZY,
+			cascade = CascadeType.ALL)
+	@JoinTable(name = "profile_friend",
+	joinColumns = { @JoinColumn(name="emailId") },
+	inverseJoinColumns = { @JoinColumn(name = "friendId") })
 	private Map<Integer, Friend> friends;
 	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
 	@MapKey
@@ -277,11 +277,11 @@ public class Profile {
 			if (other.mobileNo != null)
 				return false;
 		} else if (!mobileNo.equals(other.mobileNo))
-		if (password == null) {
-			if (other.password != null)
+			if (password == null) {
+				if (other.password != null)
+					return false;
+			} else if (!password.equals(other.password))
 				return false;
-		} else if (!password.equals(other.password))
-			return false;
 		if (posts == null) {
 			if (other.posts != null)
 				return false;

@@ -1,16 +1,6 @@
 package com.cg.capbook.boot;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-
-import org.easymock.EasyMock;
-import org.easymock.EasyMockRunner;
-import org.easymock.Mock;
 import org.easymock.TestSubject;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -22,7 +12,6 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
-
 import com.cg.capbook.beans.Message;
 import com.cg.capbook.beans.Page;
 import com.cg.capbook.beans.Post;
@@ -69,11 +58,8 @@ public class CapBookServicesImplTest {
 		profiles.put(profile1.getEmailId(), profile1);
 		profiles.put(profile2.getEmailId(), profile2);
 		List<Profile> profileList = new ArrayList<>(profiles.values());
-		
 		EasyMock.expect(mockProfileDAO.findAll()).andReturn(profileList);
-		EasyMock.replay(mockProfileDAO);*/
-		
-			
+		EasyMock.replay(mockProfileDAO);*/			
 	}
 	@After
 	public void tearDown() throws Exception {
@@ -92,26 +78,20 @@ public class CapBookServicesImplTest {
 	}
 	@Test
 	public void editProfile() throws InvalidEmailIdException {
-		
 	}
 	@Test
 	public void searchAllUsersByName() throws  NoUserFoundException{
-		
 	}
 	@Test
 	public void friendRequest() {
-		
 	}
 	@Test
 	public void sendMessage() {
-		
 	}
 	@Test
 	public void viewSentMessages() {
-		
 	}
 	@Test
 	public void viewReceivedMessages() {
-		
 	}
 }

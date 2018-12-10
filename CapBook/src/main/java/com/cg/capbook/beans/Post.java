@@ -18,25 +18,23 @@ public class Post {
 	@Id
 	@GeneratedValue(strategy=GenerationType.SEQUENCE)
 	private int postId;
+	private String emailId;
 	private String postContent;
 	@Column(columnDefinition="BLOB")
 	private byte[] postPic;
 	private int noOfPostLikes;
 	private int noOfPostDislikes;
-	@ManyToOne
-	@MapKey
-	@JoinColumn(name="emailId")
-	private Profile profile;
 	@OneToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
 	@MapKey
 	private Map<Integer, Comment> comments;
 	public Post() {
 		super();
 	}
-	public Post(int postId, String postContent, byte[] postPic, int noOfPostLikes, int noOfPostDislikes,
+	public Post(int postId, String emailId, String postContent, byte[] postPic, int noOfPostLikes, int noOfPostDislikes,
 			Map<Integer, Comment> comments) {
 		super();
 		this.postId = postId;
+		this.emailId = emailId;
 		this.postContent = postContent;
 		this.postPic = postPic;
 		this.noOfPostLikes = noOfPostLikes;
@@ -48,6 +46,12 @@ public class Post {
 	}
 	public void setPostId(int postId) {
 		this.postId = postId;
+	}
+	public String getEmailId() {
+		return emailId;
+	}
+	public void setEmailId(String emailId) {
+		this.emailId = emailId;
 	}
 	public String getPostContent() {
 		return postContent;
@@ -80,10 +84,17 @@ public class Post {
 		this.comments = comments;
 	}
 	@Override
+	public String toString() {
+		return "Post [postId=" + postId + ", emailId=" + emailId + ", postContent=" + postContent + ", postPic="
+				+ Arrays.toString(postPic) + ", noOfPostLikes=" + noOfPostLikes + ", noOfPostDislikes="
+				+ noOfPostDislikes + "]";
+	}
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((comments == null) ? 0 : comments.hashCode());
+		result = prime * result + ((emailId == null) ? 0 : emailId.hashCode());
 		result = prime * result + noOfPostDislikes;
 		result = prime * result + noOfPostLikes;
 		result = prime * result + ((postContent == null) ? 0 : postContent.hashCode());
@@ -105,6 +116,11 @@ public class Post {
 				return false;
 		} else if (!comments.equals(other.comments))
 			return false;
+		if (emailId == null) {
+			if (other.emailId != null)
+				return false;
+		} else if (!emailId.equals(other.emailId))
+			return false;
 		if (noOfPostDislikes != other.noOfPostDislikes)
 			return false;
 		if (noOfPostLikes != other.noOfPostLikes)
@@ -119,10 +135,5 @@ public class Post {
 		if (!Arrays.equals(postPic, other.postPic))
 			return false;
 		return true;
-	}
-	@Override
-	public String toString() {
-		return "Post [postId=" + postId + ", postContent=" + postContent + ", postPic=" + Arrays.toString(postPic)
-				+ ", noOfPostLikes=" + noOfPostLikes + ", noOfPostDislikes=" + noOfPostDislikes + "]";
 	}
 }

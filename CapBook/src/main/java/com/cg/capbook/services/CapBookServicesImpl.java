@@ -68,11 +68,10 @@ public class CapBookServicesImpl implements CapBookServices {
 	public String forgotPassword(String emailId,String securityQuestion,String securityAnswer) throws InvalidEmailIdException, UserAuthenticationFailedException{
 		Profile profile=profileDAO.findById(emailId).orElseThrow(()->new InvalidEmailIdException());
 		if(securityQuestion.equals(profile.getSecurityQuestion()) && securityAnswer.equals(profile.getSecurityAnswer()))
-				return codecServices.decrypt(profile.getPassword());
+			return codecServices.decrypt(profile.getPassword());
 		else
-				throw new UserAuthenticationFailedException();	
+			throw new UserAuthenticationFailedException();	
 	}
-
 	@Override
 	public Profile changePassword(String password) throws InvalidEmailIdException, InvalidPasswordException{
 		Profile profile=profileDAO.findById(sessionEmailId).orElseThrow(()->new InvalidEmailIdException());
@@ -81,7 +80,6 @@ public class CapBookServicesImpl implements CapBookServices {
 		profile.setProfilePic(null);
 		return profile;
 	}
-
 	@Override
 	public Profile editProfile(Profile profile) throws InvalidEmailIdException {
 		Profile profile1=profileDAO.findById(sessionEmailId).orElseThrow(()->new InvalidEmailIdException());
@@ -150,7 +148,9 @@ public class CapBookServicesImpl implements CapBookServices {
 		friendDAO.deleteById(friend.getFriendId());
 		return null;
 	}
-	public List<Profile> getFriendList(String emailId){
+	@Override
+	public List<Profile> getFriendList(){
+		String emailId=sessionEmailId;
 		Profile profile=profileDAO.findById(emailId).get();
 		Profile friendProfile;
 		Map<Integer, Friend> friendMap=new HashMap<>();
@@ -162,7 +162,7 @@ public class CapBookServicesImpl implements CapBookServices {
 			//Friend friend=friendDAO.findById(friends.getFriendId()).get();
 			if(friend.getFromUserId().equals(emailId)) 
 				friendProfile=profileDAO.findById(friend.getToUserId()).get();
-				//friendList2.add(friend);
+			//friendList2.add(friend);
 			else//(friend.getToUserId().equalsIgnoreCase(emailId))
 				//friendList2.add(friend);
 				friendProfile=profileDAO.findById(friend.getFromUserId()).get();
@@ -173,15 +173,16 @@ public class CapBookServicesImpl implements CapBookServices {
 	}
 	@Override
 	public void sendMessage(Message message) {
+		message.setSenderEmailId(sessionEmailId);
 		messageDAO.save(message);
 	}
 	@Override
-	public List<Message> viewSentMessages(String emailId) {
-		return messageDAO.findMessagesBySender(emailId);
+	public List<Message> viewSentMessages() {
+		return messageDAO.findMessagesBySender(sessionEmailId);
 	}
 	@Override
-	public List<Message> viewReceivedMessages(String emailId) {
-		return messageDAO.findMessagesByReceiver(emailId);
+	public List<Message> viewReceivedMessages() {
+		return messageDAO.findMessagesByReceiver(sessionEmailId);
 	}
 	@Override
 	public Profile getProfile(String emailId) throws InvalidEmailIdException {
@@ -204,8 +205,9 @@ public class CapBookServicesImpl implements CapBookServices {
 	}
 	@Override
 	public Post createPost(Post post) {
+		post.setEmailId(sessionEmailId);
 		postDAO.save(post);
-		return null;
+		return post;
 	}
 	@Override
 	public Post updatePostLikes(Post post) {
@@ -225,5 +227,10 @@ public class CapBookServicesImpl implements CapBookServices {
 		//Map<Integer, Comment> commentMap=new HashMap<>(oldPost.getComments());
 		//commentMap.put(post.getComments()., value)
 		return null;
+	}
+	@Override
+	public List<Post> getPosts() {
+		List<Post> posts=postDAO.findAllByEmail(sessionEmailId);
+		return posts;
 	}
 }

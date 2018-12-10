@@ -20,8 +20,8 @@ public interface CapBookServices {
 	Profile editProfile(Profile profile) throws InvalidEmailIdException;
 	List<Profile> searchAllUsersByName(String userName) throws  NoUserFoundException;
 	void sendMessage(Message message);
-	List<Message> viewSentMessages(String emailId);
-	List<Message> viewReceivedMessages(String emailId);
+	List<Message> viewSentMessages();
+	List<Message> viewReceivedMessages();
 	Friend addFriend(String toUserId) throws FriendshipAlreadyExistsException, RequestAlreadyReceivedException, RequestAlreadySentException;
 	Profile getProfile(String emailId) throws InvalidEmailIdException;
 	Profile insertProfilePic(byte[] profilePic);
@@ -29,10 +29,11 @@ public interface CapBookServices {
 	Friend acceptFriend(String fromUserId, String toUserId) throws RequestAlreadySentException;
 	Profile changePassword(String newPassword) throws InvalidEmailIdException, InvalidPasswordException;
 	Friend rejectFriend(String fromUserId, String toUserId) throws RequestAlreadySentException;
-	List<Profile> getFriendList(String emailId);
+	List<Profile> getFriendList();
 	String forgotPassword(String emailId, String securityQuestion, String securityAnswer)throws InvalidEmailIdException, UserAuthenticationFailedException;
 	Post createPost(Post post);
 	Post updatePostLikes(Post post);
 	Post updatePostDislikes(Post post);
 	Post addPostComment(Comment comment);
+	List<Post> getPosts();
 }

@@ -1,4 +1,4 @@
- package com.cg.capbook.services;
+package com.cg.capbook.services;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -7,7 +7,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class StorageService {
 	private final Path rootLocation=Paths.get("D:\\java\\finalProject\\userImages");
-	
 	public void store(MultipartFile file) {
 		try {
 			Files.copy(
