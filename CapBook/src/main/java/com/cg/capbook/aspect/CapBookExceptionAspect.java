@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import com.cg.capbook.customResponse.CustomResponse;
+import com.cg.capbook.customresponse.CustomResponse;
 import com.cg.capbook.exceptions.EmailAlreadyUsedException;
 import com.cg.capbook.exceptions.FriendshipAlreadyExistsException;
 import com.cg.capbook.exceptions.InvalidEmailIdException;

@@ -10,10 +10,12 @@ import org.springframework.stereotype.Component;
 import com.cg.capbook.beans.Comment;
 import com.cg.capbook.beans.Friend;
 import com.cg.capbook.beans.Message;
+import com.cg.capbook.beans.Notification;
 import com.cg.capbook.beans.Post;
 import com.cg.capbook.beans.Profile;
 import com.cg.capbook.daoservices.FriendDAO;
 import com.cg.capbook.daoservices.MessageDAO;
+import com.cg.capbook.daoservices.NotificationDAO;
 import com.cg.capbook.daoservices.PostDAO;
 import com.cg.capbook.daoservices.ProfileDAO;
 import com.cg.capbook.exceptions.EmailAlreadyUsedException;
@@ -36,6 +38,8 @@ public class CapBookServicesImpl implements CapBookServices {
 	private PostDAO postDAO;
 	@Autowired
 	private CodecServices codecServices;
+	@Autowired
+	private NotificationDAO notificationDAO;
 	static String sessionEmailId;
 	@Override
 	public Profile registerUser(Profile profile) throws EmailAlreadyUsedException {
@@ -95,6 +99,13 @@ public class CapBookServicesImpl implements CapBookServices {
 			profile1.setDesignation(profile.getDesignation());
 		profile= profileDAO.save(profile1);
 		profile.setProfilePic(null);
+		Notification notification = new Notification();
+		notification.setNotificationMessage(profile.getFirstName()+" updated profile");
+		notification.setNotificationType("Profile Update");
+		notification.setSeenStatus(false);
+		//List<Profile> friends = profile1.getF
+		//notification.set
+		//notificationDAO.save(notification);
 		return profile;
 	}
 	@Override
@@ -113,12 +124,19 @@ public class CapBookServicesImpl implements CapBookServices {
 		Friend friend1=friendDAO.checkFriendship(toUserId,fromUserId);
 		if(friend==null && friend1==null){
 			friend=new Friend(toUserId,fromUserId);
+			friend.setFriendshipStatus(false);
 			friend=friendDAO.save(friend);
 			Profile profile=profileDAO.findById(fromUserId).get();
 			Map<Integer, Friend> friendMap=new HashMap<>(profile.getFriends());
 			friendMap.put(friend.getFriendId(), friend);
 			profile.setFriends(friendMap);
 			profileDAO.save(profile);
+			/*friendMap=null;
+			profile=profileDAO.findById(toUserId).get();
+			friendMap=profile.getFriends();
+			friendMap.put(friend.getFriendId(), friend);
+			profile.setFriends(friendMap);
+			profileDAO.save(profile);*/
 		}
 		else if(friend==null && friend1!=null)
 			throw new RequestAlreadyReceivedException();
@@ -127,6 +145,16 @@ public class CapBookServicesImpl implements CapBookServices {
 		else
 			throw new FriendshipAlreadyExistsException();
 		return friend;
+	}
+	@Override
+	public List<Profile> viewFriendRequests() {
+		List<Profile> profiles = new ArrayList<>();
+		List<Friend> friends = friendDAO.viewFriendRequests(sessionEmailId,false);
+		for (Friend friend : friends) {
+			Profile profile = profileDAO.findById(friend.getFromUserId()).get();
+			profiles.add(profile);
+		}
+		return profiles;
 	}
 	@Override
 	public Friend acceptFriend(String fromUserId,String toUserId) throws RequestAlreadySentException {
@@ -178,11 +206,23 @@ public class CapBookServicesImpl implements CapBookServices {
 	}
 	@Override
 	public List<Message> viewSentMessages() {
-		return messageDAO.findMessagesBySender(sessionEmailId);
+		List<Message> messages =  messageDAO.findMessagesBySender(sessionEmailId);
+		Profile profile;
+		for (Message message : messages) {
+			profile = profileDAO.findById(message.getReceiverEmailId()).get();
+			message.setReceiverEmailId(profile.getFirstName()+" "+profile.getLastName());
+		}
+		return messages;
 	}
 	@Override
 	public List<Message> viewReceivedMessages() {
-		return messageDAO.findMessagesByReceiver(sessionEmailId);
+		List<Message> messages =  messageDAO.findMessagesByReceiver(sessionEmailId);
+		Profile profile;
+		for (Message message : messages) {
+			profile = profileDAO.findById(message.getSenderEmailId()).get();
+			message.setSenderEmailId(profile.getFirstName()+" "+profile.getLastName());
+		}
+		return messages; 
 	}
 	@Override
 	public Profile getProfile(String emailId) throws InvalidEmailIdException {
@@ -233,4 +273,14 @@ public class CapBookServicesImpl implements CapBookServices {
 		List<Post> posts=postDAO.findAllByEmail(sessionEmailId);
 		return posts;
 	}
+	@Override
+	public List<Notification> getNotifications() {
+		List<Notification> notifications = notificationDAO.getNotifications(sessionEmailId,false);
+		for (Notification notification : notifications) {
+			notification.setSeenStatus(true);
+			notificationDAO.save(notification);
+		}
+		return notifications;
+	}
+	
 }

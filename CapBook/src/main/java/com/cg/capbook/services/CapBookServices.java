@@ -3,6 +3,7 @@ import java.util.List;
 import com.cg.capbook.beans.Comment;
 import com.cg.capbook.beans.Friend;
 import com.cg.capbook.beans.Message;
+import com.cg.capbook.beans.Notification;
 import com.cg.capbook.beans.Post;
 import com.cg.capbook.beans.Profile;
 import com.cg.capbook.exceptions.EmailAlreadyUsedException;
@@ -27,6 +28,7 @@ public interface CapBookServices {
 	Profile insertProfilePic(byte[] profilePic);
 	byte[] fetchProfilePic();
 	Friend acceptFriend(String fromUserId, String toUserId) throws RequestAlreadySentException;
+	List<Profile> viewFriendRequests();
 	Profile changePassword(String newPassword) throws InvalidEmailIdException, InvalidPasswordException;
 	Friend rejectFriend(String fromUserId, String toUserId) throws RequestAlreadySentException;
 	List<Profile> getFriendList();
@@ -36,4 +38,5 @@ public interface CapBookServices {
 	Post updatePostDislikes(Post post);
 	Post addPostComment(Comment comment);
 	List<Post> getPosts();
+	List<Notification> getNotifications();
 }

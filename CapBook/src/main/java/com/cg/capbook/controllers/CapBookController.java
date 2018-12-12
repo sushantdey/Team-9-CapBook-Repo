@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import com.cg.capbook.beans.Friend;
 import com.cg.capbook.beans.Message;
+import com.cg.capbook.beans.Notification;
 import com.cg.capbook.beans.Post;
 import com.cg.capbook.beans.Profile;
 import com.cg.capbook.exceptions.EmailAlreadyUsedException;
@@ -80,6 +81,11 @@ public class CapBookController {
 		Friend friend=capBookServices.addFriend(toUserId);
 		return new ResponseEntity<Friend>(friend,HttpStatus.OK);
 	}
+	@RequestMapping(value="/viewFriendRequests",method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)
+	ResponseEntity<List<Profile>> viewFriendRequests() throws FriendshipAlreadyExistsException, RequestAlreadyReceivedException, RequestAlreadySentException{			
+		List<Profile> friendRequests=capBookServices.viewFriendRequests();
+		return new ResponseEntity<List<Profile>>(friendRequests,HttpStatus.OK);
+	}
 	@RequestMapping(value="/acceptFriend",method=RequestMethod.POST,consumes=MediaType.APPLICATION_JSON_VALUE,produces=MediaType.APPLICATION_JSON_VALUE)
 	ResponseEntity<Friend> acceptFriend(@RequestBody Friend friend) throws FriendshipAlreadyExistsException, RequestAlreadyReceivedException, RequestAlreadySentException{			
 		friend=capBookServices.acceptFriend(friend.getFromUserId(),friend.getToUserId());
@@ -118,7 +124,7 @@ public class CapBookController {
 		System.out.println("Image");
 		storageService.store(image);
 		//File file1=(File) storageService.loadFile(image.getOriginalFilename());
-		File file=new File("D:\\Users\\akhadsar\\Pictures\\Image"+image.getOriginalFilename());
+		File file=new File("D:\\java\\finalProject\\userImages"+image.getOriginalFilename());
 		//System.out.println(file);
 		image.transferTo(file);
 		//System.out.println(file);
@@ -142,5 +148,10 @@ public class CapBookController {
 	ResponseEntity<Post> createPost(@RequestBody Post post){		
 		capBookServices.createPost(post);
 		return new ResponseEntity<Post>(post,HttpStatus.OK);
+	}
+	@RequestMapping(value="/getNotifications",method=RequestMethod.GET,produces=MediaType.APPLICATION_JSON_VALUE)
+	ResponseEntity<List<Notification>> getNotifications(){			
+		List<Notification> notifications=capBookServices.getNotifications();
+		return new ResponseEntity<List<Notification>>(notifications,HttpStatus.OK);
 	}
 }

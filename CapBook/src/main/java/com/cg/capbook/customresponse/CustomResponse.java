@@ -1,4 +1,4 @@
-package com.cg.capbook.customResponse;
+package com.cg.capbook.customresponse;
 public class CustomResponse {
 	private int statusCode;
 	private String responseMessage;
